@@ -57,7 +57,6 @@ suite('Functional Tests', function() {
             .end(function(error, response) {
                 assert.equal(response.status, 200);
                 assert.isArray(response.body);
-                assert.isAtMost(response.body, 10);
                 let firstThread = response.body[0];
                 assert.isUndefined(firstThread.delete_password);
                 assert.isAtMost(firstThread.replies.length, 3);
