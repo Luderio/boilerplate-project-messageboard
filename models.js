@@ -1,8 +1,15 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+
 
 //SCHEMA
-const MessageSchema = new Schema({
+const ReplySchema = mongoose.Schema({
+    text: {type: String, required: true},
+    created_on: {type: String},
+    delete_password: {type: String, required: true},
+    reported: {type: Boolean, default: false}
+});
+
+const MessageSchema = mongoose.Schema({
     board: {type: String, default: ''},
     text: {type: String, required: true},
     delete_password: {type: String, required: true},
@@ -12,16 +19,15 @@ const MessageSchema = new Schema({
     replies: [ReplySchema]
 });
 
-const ReplySchema = new Schema({
-    text: {type: String, required: true},
-    created_on: {type: String},
-    delete_password: {type: String, required: true},
-    reported: {type: Boolean, default: false}
-});
+    
 
-//MODEL
-const NewMessage = mongoose.model('NewMessage', MessageSchema);
-const NewReply = mongoose.model("NewReply", ReplySchema);
+    //MODEL
+    const NewMessage = mongoose.model('NewMessage', MessageSchema);
+    const NewReply = mongoose.model("NewReply", ReplySchema);
 
-module.exports = {NewMessage, NewReply}
+
+    module.exports = {NewMessage, NewReply};
+
+
+
 
