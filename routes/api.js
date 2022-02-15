@@ -84,8 +84,6 @@ module.exports = function (app) {
               return response.json('incorrect password');
             }
 
-          }else {
-            response.json('Thread not found');
           }
         }
       );
