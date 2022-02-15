@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Information Security Codes
 app.use(helmet.frameguard({action: "sameorigin"}));
 app.use(helmet.dnsPrefetchControl({allow: false}));
-app.use(helmet.referrerPolicy({policy: "origin"}));//check this later
+app.use(helmet.referrerPolicy({policy: "same-origin"}));//check this later
 
 
 // ---------------End of Information Security Codes---------------
