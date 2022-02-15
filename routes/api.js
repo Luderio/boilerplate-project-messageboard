@@ -62,20 +62,18 @@ module.exports = function (app) {
     })
 
     .delete(function (request, response) {
-      let threadID = request.body.thread_id;
-      let delete_password = request.body.delete_password;
 
       Message.findById(
-        threadID,
+        request.body.thread_id,
         (error, threadToDelete) => {
           if (!error && threadToDelete) {
 
-            if (threadToDelete.delete_password === delete_password) {
+            if (threadToDelete.delete_password === request.body.delete_password) {
 
               Message.findByIdAndRemove(
-                threadID,
-                (error, deletedMessage) => {
-                  if (!error && deletedMessage) {
+                request.body.thread_id,
+                (error, deletedThread) => {
+                  if (!error && deletedThread) {
                     return response.json('success');
                   }
                 }
@@ -101,9 +99,6 @@ module.exports = function (app) {
           }
         }
       );
-
-
-
     })
 
 
@@ -194,8 +189,6 @@ module.exports = function (app) {
               }
             });
 
-          }else {
-            return response.json('Thread not found');
           }
         }
       );
@@ -222,14 +215,8 @@ module.exports = function (app) {
                 return response.json('success');
               }
             });
-
-          }else {
-            return response.json('Thread not found');
           }
         }
       );
-
-
-
     })
 };
