@@ -4,63 +4,34 @@ const { Message, Reply } = require("../models");
 
 
 module.exports = function (app) {
+  
+  app.route('/api/threads/:board')
 
-  app.post('/api/threads/:board', (request, response) => {
+    .post(function (request, response) {
+      //object containing the form data from front-end.
+      let { board, text, delete_password } = request.body;
 
-    //object containing the form data from front-end.
-    let { board, text, delete_password } = request.body;
-
-    // if the board from the form is empty.
-    if (!board || board === '') {
-      board = request.params.board;
-    }
-
-    // constructs the database model, saved the data to database and redirects the page to the created board/thread. 
-    let NewMessage = new Message({ board, text, delete_password });
-    NewMessage.created_on = new Date().toUTCString();
-    NewMessage.bumped_on = new Date().toUTCString();
-    NewMessage.reported = false;
-    NewMessage.replies = [];
-
-    NewMessage.save((error, savedMessage) => {
-      if (!error && savedMessage) {
-        return response.redirect('/b/' + savedMessage.board + '/' + savedMessage.id);
+      // if the board from the form is empty.
+      if (!board || board === '') {
+        board = request.params.board;
       }
-    });
 
-  })
+      // constructs the database model, saved the data to database and redirects the page to the created board/thread. 
+      let NewMessage = new Message({ board, text, delete_password });
+      NewMessage.created_on = new Date().toUTCString();
+      NewMessage.bumped_on = new Date().toUTCString();
+      NewMessage.reported = false;
+      NewMessage.replies = [];
 
-  app.post('/api/replies/:board', (request, response) => {
-
-    //object containing the form data from front-end.
-    let { board, thread_id, text, delete_password } = request.body;
-
-    // if the board from the form is empty.
-    if (!board || board === '') {
-      board = request.params.board;
-    }
-
-    // constructs the database model, and save the data to database.
-    let newReply = new Reply({ board, thread_id, text, delete_password });
-    newReply.created_on = new Date().toUTCString();
-    newReply.reported = false;
-
-    Message.findByIdAndUpdate(
-      thread_id, 
-      {$push: {replies: newReply}, bumped_on: new Date().toUTCString()},
-      {new: true},
-      (error, updatedThread) => {
-        if (!error && updatedThread) {
-          return response.redirect('/b/' + updatedThread.board + '/' + updatedThread.id + '?new_reply_id=' + newReply.id);
+      NewMessage.save((error, savedMessage) => {
+        if (!error && savedMessage) {
+          return response.redirect('/b/' + savedMessage.board + '/' + savedMessage.id);
         }
-      }
-      );
+      });
+    })
 
-  })
-
-  app.get('/api/threads/:board', (request, response) => {
-
-    let board = request.params.board;
+    .get(function (request, response){
+      let board = request.params.board;
 
       Message.find({board: board})
       .sort({bumped_on: 'desc'})
@@ -88,12 +59,80 @@ module.exports = function (app) {
           return response.json(arrayOfThreads)
         }
       });
+    })
 
-  })
+    .delete(function (request, response) {
 
-  app.get('/api/replies/:board', (request, response) => {
+      Message.findById(
+        request.body.thread_id,
+        (error, threadToDelete) => {
+          if (!error && threadToDelete) {
 
-    let threadID = request.query.thread_id;
+            if (threadToDelete.delete_password === request.body.delete_password) {
+
+              Message.findByIdAndRemove(
+                request.body.thread_id,
+                (error, deletedThread) => {
+                  if (!error && deletedThread) {
+                    return response.json('success');
+                  }
+                }
+              );
+            }else {
+              return response.json('incorrect password');
+            }
+
+          }
+        }
+      );
+    })
+
+    .put(function (request, response) {
+
+      Message.findByIdAndUpdate(
+        request.body.thread_id,
+        {reported: true},
+        {new: true},
+        (error, updatedThread) => {
+          if (!error && updatedThread) {
+            return response.json('success');
+          }
+        }
+      );
+    })
+
+    //-----------------------------------------
+    
+  app.route('/api/replies/:board')
+
+    .post(function (request, response) {
+      //object containing the form data from front-end.
+      let { board, thread_id, text, delete_password } = request.body;
+
+      // if the board from the form is empty.
+      if (!board || board === '') {
+        board = request.params.board;
+      }
+
+      // constructs the database model, and save the data to database.
+      let newReply = new Reply({ board, thread_id, text, delete_password });
+      newReply.created_on = new Date().toUTCString();
+      newReply.reported = false;
+
+      Message.findByIdAndUpdate(
+        thread_id, 
+        {$push: {replies: newReply}, bumped_on: new Date().toUTCString()},
+        {new: true},
+        (error, updatedThread) => {
+          if (!error && updatedThread) {
+            return response.redirect('/b/' + updatedThread.board + '/' + updatedThread.id + '?new_reply_id=' + newReply.id);
+          }
+        }
+        );
+    })
+
+    .get(function (request, response) {
+      let threadID = request.query.thread_id;
 
       Message.findById(
         threadID, 
@@ -120,104 +159,60 @@ module.exports = function (app) {
         }
       );
 
-  })
+    })
 
-  app.delete('/api/threads/:board', (request, response) => {
+    .delete(function (request, response) {
 
-    Message.findById(
-      request.body.thread_id,
-      (error, threadToDelete) => {
-        if (!error && threadToDelete) {
+      Message.findById(
+        request.body.thread_id,
+        (error, replyToDelete) => {
+          if (!error && replyToDelete) {
 
-          if (threadToDelete.delete_password === request.body.delete_password) {
-
-            Message.findByIdAndRemove(
-              request.body.thread_id,
-              (error, deletedThread) => {
-                if (!error && deletedThread) {
-                  return response.json('success');
+            let i;
+            for (i = 0; i < replyToDelete.replies.length; i++) {
+              if (replyToDelete.replies[i].id === request.body.reply_id) {
+                if (replyToDelete.replies[i].delete_password === request.body.delete_password) {
+                  replyToDelete.replies[i].text = '[deleted]';
+                }else {
+                  return response.json('incorrect password');
                 }
               }
-            );
-          }else {
-            return response.json('incorrect password');
+            }
+
+            replyToDelete.save((error, updatedThread) => {
+              if (!error && updatedThread) {
+                return response.json('success');
+              }
+            });
+
           }
-
         }
-      }
-    );
+      );
 
-  })
+    })
 
-  app.delete('/api/replies/:board', (request, response) => {
 
-    Message.findById(
-      request.body.thread_id,
-      (error, replyToDelete) => {
-        if (!error && replyToDelete) {
+    .put(function (request, response) {
 
-          let i;
-          for (i = 0; i < replyToDelete.replies.length; i++) {
-            if (replyToDelete.replies[i].id === request.body.reply_id) {
-              if (replyToDelete.replies[i].delete_password === request.body.delete_password) {
-                replyToDelete.replies[i].text = '[deleted]';
-              }else {
-                return response.json('incorrect password');
+      Message.findById(
+        request.body.thread_id,
+        (error, replyToReport) => {
+          if (!error && replyToReport) {
+
+            let i;
+            for (i = 0; i < replyToReport.replies.length; i++) {
+              if (replyToReport.replies[i].id === request.body.reply_id) {
+                replyToReport.replies[i].reported = true;
               }
             }
+
+            replyToReport.save((error, updatedThread) => {
+              if (!error && updatedThread) {
+                return response.json('success');
+              }
+            });
           }
-
-          replyToDelete.save((error, updatedThread) => {
-            if (!error && updatedThread) {
-              return response.json('success');
-            }
-          });
-
         }
-      }
-    );
-
-  })
-
-  app.put('/api/threads/:board', (request, response) => {
-
-    Message.findByIdAndUpdate(
-      request.body.thread_id,
-      {reported: true},
-      {new: true},
-      (error, updatedThread) => {
-        if (!error && updatedThread) {
-          return response.json('success');
-        }
-      }
-    );
-
-  })
-
-  app.put('/api/replies/:board', (request, response) => {
-
-    Message.findById(
-      request.body.thread_id,
-      (error, replyToReport) => {
-        if (!error && replyToReport) {
-
-          let i;
-          for (i = 0; i < replyToReport.replies.length; i++) {
-            if (replyToReport.replies[i].id === request.body.reply_id) {
-              replyToReport.replies[i].reported = true;
-            }
-          }
-
-          replyToReport.save((error, updatedThread) => {
-            if (!error && updatedThread) {
-              return response.json('success');
-            }
-          });
-        }
-      }
-    );
-
-  })
-  
-  
+      );
+    })
 };
