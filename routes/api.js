@@ -85,7 +85,7 @@ module.exports = function (app) {
             }
 
           }else {
-            response.json('incorrect password');
+            response.json('Thread not found');
           }
         }
       );
@@ -197,7 +197,7 @@ module.exports = function (app) {
             });
 
           }else {
-            return response.json('incorrect password');
+            return response.json('Thread not found');
           }
         }
       );
@@ -226,7 +226,7 @@ module.exports = function (app) {
             });
 
           }else {
-            return response.json('incorrect password');
+            return response.json('Thread not found');
           }
         }
       );
