@@ -107,6 +107,43 @@ suite('Functional Tests', function() {
             });
     });
 
+    //DELETE WITH INCORRECT PASSWORD
+
+    test('DELETE replies on a Thread with incorrect password', function(done) {
+        chai.request(server)
+            .delete('/api/replies/test')
+            .query({thread_id: testMessageId})
+            .send({
+                thread_id: testMessageId,
+                reply_id: testReplyId,
+                delete_password: 'invalid'
+            })
+            .end(function(error, response) {
+                assert.equal(response.status, 200);
+                assert.equal(response.body, 'incorrect password');
+                done();
+            });
+    });
+
+    test('DELETE a Thread with incorrect password', function(done) {
+        chai.request(server)
+            .delete('/api/threads/test')
+            .send({
+                thread_id: testMessageId,
+                delete_password: 'invalid'
+            })
+            .end(function(error, response) {
+                assert.equal(response.status, 200);
+                assert.equal(response.body, 'incorect password');
+                done();
+            });
+    });
+
+    //DELETE WITH CORRECT PASSWORD
+
+
+
+
 
     //Put other tests above this.
     test('DELETE replies on a Thread', function(done) {
@@ -140,6 +177,7 @@ suite('Functional Tests', function() {
                 done();
             });
     });
+
 
 });
 

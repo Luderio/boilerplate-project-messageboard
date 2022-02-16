@@ -173,9 +173,9 @@ module.exports = function (app) {
               if (replyToDelete.replies[i].id === request.body.reply_id) {
                 if (replyToDelete.replies[i].delete_password === request.body.delete_password) {
                   replyToDelete.replies[i].text = '[deleted]';
-                }else {
-                  return response.json('incorrect password');
                 }
+              }else {
+                return response.json('incorrect password');
               }
             }
 
