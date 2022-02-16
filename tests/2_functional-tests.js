@@ -5,18 +5,18 @@ const server = require('../server');
 
 chai.use(chaiHttp);
 
+//variables to be used as input for the test cases.
+    let testMessageId;
+    let testReplyId;
+    let testDeletePassword = 'test_delete_pass';
+    let testPath;
+    //let testBoard;
 
 
 suite('Functional Tests', function() {
 
-    //variables to be used as input for the test cases.
-    let testMessageId;
-    let testReplyId;
-    let testDeletePassword = 'test_delete_pass';
-    
-
-     //Creating a new thread: POST request to /api/threads/{board}
-     test('Creating a new thread', function(done) {
+    //Creating a new thread: POST request to /api/threads/{board}
+    test('Creating a new thread', function(done) {
         chai.request(server)
             .post('/api/threads/test')
             .send({
@@ -30,6 +30,7 @@ suite('Functional Tests', function() {
                 testMessageId = createdThreadId;
                 done();
             });
+
     });
 
     //Creating a new reply: POST request to /api/replies/{board}
@@ -120,7 +121,7 @@ suite('Functional Tests', function() {
             })
             .end(function(error, response) {
                 assert.equal(response.status, 200);
-                assert.equal(response.body, 'success');
+                assert.equal(response.body, 'incorrect password');
                 done();
             });
     });
@@ -141,9 +142,7 @@ suite('Functional Tests', function() {
 
     //DELETE WITH CORRECT PASSWORD
 
-
-
-
+    
 
     //Put other tests above this.
     test('DELETE replies on a Thread', function(done) {
@@ -161,7 +160,6 @@ suite('Functional Tests', function() {
                 done();
             });
     });
-
 
     //Put other tests above this.
     test('DELETE a Thread', function(done) {
