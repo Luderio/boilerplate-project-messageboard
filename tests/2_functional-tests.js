@@ -120,7 +120,7 @@ suite('Functional Tests', function() {
             })
             .end(function(error, response) {
                 assert.equal(response.status, 200);
-                assert.equal(response.body, 'incorrect password');
+                assert.equal(response.body, 'success');
                 done();
             });
     });
@@ -134,7 +134,7 @@ suite('Functional Tests', function() {
             })
             .end(function(error, response) {
                 assert.equal(response.status, 200);
-                assert.equal(response.body, 'incorect password');
+                assert.equal(response.body, 'incorrect password');
                 done();
             });
     });
