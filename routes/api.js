@@ -25,7 +25,7 @@ module.exports = function (app) {
 
       NewMessage.save((error, savedMessage) => {
         if (!error && savedMessage) {
-          return response.redirect('/b/' + savedMessage.board + '/' + savedMessage.id);
+          return response.redirect('/b/' + savedMessage.board);
         }
       });
     })
@@ -115,7 +115,7 @@ module.exports = function (app) {
       }
 
       // constructs the database model, and save the data to database.
-      let newReply = new Reply({ board, thread_id, text, delete_password });
+      let newReply = new Reply({ thread_id, text, delete_password });
       newReply.created_on = new Date().toUTCString();
       newReply.reported = false;
 
