@@ -25,7 +25,7 @@ module.exports = function (app) {
 
       NewMessage.save((error, savedMessage) => {
         if (!error && savedMessage) {
-          response.redirect('/b/' + savedMessage.board + '/');
+          //response.redirect('/b/' + savedMessage.board + '/');
           return;
         }
       });
