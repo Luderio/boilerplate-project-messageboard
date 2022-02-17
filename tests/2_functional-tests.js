@@ -32,7 +32,6 @@ suite('Functional Tests', function() {
                     testMessageId = createdThreadId;
                     done();
                 });
-
         });
 
         //Creating a new reply: POST request to /api/replies/{board}

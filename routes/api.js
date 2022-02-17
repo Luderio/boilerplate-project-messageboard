@@ -96,6 +96,7 @@ module.exports = function (app) {
         {new: true},
         (error, updatedThread) => {
           if (!error && updatedThread) {
+            console.log(updatedThread)
             return response.send('reported');
           }
         }
@@ -205,6 +206,7 @@ module.exports = function (app) {
 
             replyToReport.save((error, updatedThread) => {
               if (!error && updatedThread) {
+                console.log(updatedThread)
                 return response.send('reported');
               }
             });
