@@ -4,7 +4,7 @@ const { Message, Reply } = require("../models");
 
 
 module.exports = function (app) {
-  
+
   app.route('/api/threads/:board')
 
     .post(function (request, response) {
