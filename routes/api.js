@@ -25,7 +25,8 @@ module.exports = function (app) {
 
       NewMessage.save((error, savedMessage) => {
         if (!error && savedMessage) {
-          return response.redirect('/b/' + savedMessage.board);
+          response.redirect('/b/' + savedMessage.board + '/');
+          return;
         }
       });
     })
@@ -74,12 +75,12 @@ module.exports = function (app) {
                 request.body.thread_id,
                 (error, deletedThread) => {
                   if (!error && deletedThread) {
-                    return response.json('success');
+                    return response.send('success');
                   }
                 }
               );
             }else {
-              return response.json('incorrect password');
+              return response.send('incorrect password');
             }
 
           }
@@ -95,7 +96,7 @@ module.exports = function (app) {
         {new: true},
         (error, updatedThread) => {
           if (!error && updatedThread) {
-            return response.json('success');
+            return response.send('reported');
           }
         }
       );
@@ -107,15 +108,11 @@ module.exports = function (app) {
 
     .post(function (request, response) {
       //object containing the form data from front-end.
-      let { board, thread_id, text, delete_password } = request.body;
+      let { thread_id, text, delete_password } = request.body;
 
-      // if the board from the form is empty.
-      if (!board || board === '') {
-        board = request.params.board;
-      }
 
       // constructs the database model, and save the data to database.
-      let newReply = new Reply({ thread_id, text, delete_password });
+      let newReply = new Reply({ text, delete_password });
       newReply.created_on = new Date().toUTCString();
       newReply.reported = false;
 
@@ -125,7 +122,7 @@ module.exports = function (app) {
         {new: true},
         (error, updatedThread) => {
           if (!error && updatedThread) {
-            return response.redirect('/b/' + updatedThread.board + '/' + updatedThread.id + '?new_reply_id=' + newReply.id);
+            return response.redirect('/b/' + updatedThread.board + '/' + updatedThread.id);
           }
         }
         );
@@ -175,13 +172,13 @@ module.exports = function (app) {
                   replyToDelete.replies[i].text = '[deleted]';
                 }
               }else {
-                return response.json('incorrect password');
+                return response.send('incorrect password');
               }
             }
 
             replyToDelete.save((error, updatedThread) => {
               if (!error && updatedThread) {
-                return response.json('success');
+                return response.send('success');
               }
             });
 
@@ -208,7 +205,7 @@ module.exports = function (app) {
 
             replyToReport.save((error, updatedThread) => {
               if (!error && updatedThread) {
-                return response.json('success');
+                return response.send('reported');
               }
             });
           }
@@ -216,3 +213,10 @@ module.exports = function (app) {
       );
     })
 };
+
+
+//USED TO DROP RECORDS ON THE DATABASE/
+/*Message.remove({}, (error, result) => {
+  if (error) return console.log(error);
+  console.log(result);
+});*/
