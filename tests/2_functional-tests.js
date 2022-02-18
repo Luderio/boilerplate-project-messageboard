@@ -127,7 +127,7 @@ suite('Functional Tests', function() {
 
     //=======================================================================================
 
-    suite('', function() {
+    suite('DELETE: Functional Tests', function() {
         //DELETE REPLY WITH INCORRECT PASSWORD
 
         //Deleting a reply with the incorrect password: DELETE request to /api/replies/{board} with an invalid delete_password
