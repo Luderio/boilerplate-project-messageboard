@@ -18,10 +18,12 @@ module.exports = function (app) {
 
       // constructs the database model, saved the data to database and redirects the page to the created board/thread. 
       let NewMessage = new Message({ board, text, delete_password });
-      NewMessage.created_on = new Date().toUTCString();
-      NewMessage.bumped_on = new Date().toUTCString();
+      NewMessage.created_on = new Date()
+      NewMessage.bumped_on = new Date()
       NewMessage.reported = false;
       NewMessage.replies = [];
+
+      console.log(NewMessage)
 
       NewMessage.save((error, savedMessage) => {
         if (!error && savedMessage) {
