@@ -23,12 +23,12 @@ module.exports = function (app) {
       NewMessage.reported = false;
       NewMessage.replies = [];
 
-      console.log(NewMessage)
+      console.log("---------POST NEW THREAD---------")
+      console.log(NewMessage)// outputs the result to the console
 
       NewMessage.save((error, savedMessage) => {
         if (!error && savedMessage) {
-          response.redirect('/b/' + savedMessage.board + '/');
-          return;
+          return response.redirect('/b/' + savedMessage.board + '/');
         }
       });
     })
@@ -43,6 +43,9 @@ module.exports = function (app) {
       .lean()
       .exec((error, arrayOfThreads) => {
         if (!error && arrayOfThreads) {
+
+          console.log("---------GET THE THREAD---------")
+          console.log(arrayOfThreads)// outputs the result to the console
           
           arrayOfThreads.forEach((thread) => {
 
@@ -59,7 +62,7 @@ module.exports = function (app) {
             });
           });
 
-          return response.json(arrayOfThreads)
+          return response.json(arrayOfThreads)//this needs to be a json.
         }
       });
     })
@@ -77,6 +80,10 @@ module.exports = function (app) {
                 request.body.thread_id,
                 (error, deletedThread) => {
                   if (!error && deletedThread) {
+
+                    console.log("---------DELETE THE THREAD---------")
+                    console.log(deletedThread)// outputs the result to the console
+
                     return response.send('success');
                   }
                 }
@@ -98,7 +105,10 @@ module.exports = function (app) {
         {new: true},
         (error, updatedThread) => {
           if (!error && updatedThread) {
-            console.log(updatedThread)
+
+            console.log("---------REPORTS THE THREAD---------")
+            console.log(updatedThread) // outputs the result to the console
+
             return response.send('reported');
           }
         }
@@ -125,6 +135,10 @@ module.exports = function (app) {
         {new: true},
         (error, updatedThread) => {
           if (!error && updatedThread) {
+
+            console.log("---------CREATE NEW REPLIES---------")
+            console.log(updatedThread)// outputs the result to the console
+
             return response.redirect('/b/' + updatedThread.board + '/' + updatedThread.id);
           }
         }
@@ -138,6 +152,7 @@ module.exports = function (app) {
         threadID, 
         (error, thread) => {
           if (!error && thread) {
+            //the following items in the object will not be displayed as per requirtement
             thread.delete_password = undefined;
             thread.reported = undefined;
 
@@ -148,11 +163,14 @@ module.exports = function (app) {
             });
 
             thread.replies.forEach((reply) => {
+              //the following items in the object will not be displayed as per requirtement
               reply.delete_password = undefined;
               reply.reported = undefined;
             });
 
-            return response.json(thread);
+            console.log("---------GETS THE REPLY---------")
+            console.log(thread)
+            return response.send(thread);
           
 
           }
@@ -181,6 +199,9 @@ module.exports = function (app) {
 
             replyToDelete.save((error, updatedThread) => {
               if (!error && updatedThread) {
+
+                console.log("---------DELETES THE REPLY---------")
+                console.log(updatedThread) // Outputs the result to console
                 return response.send('success');
               }
             });
@@ -208,7 +229,9 @@ module.exports = function (app) {
 
             replyToReport.save((error, updatedThread) => {
               if (!error && updatedThread) {
-                console.log(updatedThread)
+
+                console.log("---------REPORTS THE REPLY---------")
+                console.log(updatedThread) // Outputs the result to console
                 return response.send('reported');
               }
             });
