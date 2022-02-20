@@ -30,9 +30,11 @@ suite('Functional Tests', function() {
                     assert.equal(response.status, 200);
                     let createdThreadId = response.redirects[0].split('/')[response.redirects[0].split('/').length - 1];
                     testMessageId = createdThreadId;
+                    console.log("===========================")
+                    console.log(testMessageId)
                     done();
                 });
-        })
+        }).timeout(10000)
 
         //Creating a new reply: POST request to /api/replies/{board}
         test('POST: Creating a new reply on a Thread', function(done) {

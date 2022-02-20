@@ -123,7 +123,6 @@ module.exports = function (app) {
       //object containing the form data from front-end.
       let { thread_id, text, delete_password } = request.body;
 
-
       // constructs the database model, and save the data to database.
       let newReply = new Reply({ text, delete_password });
       newReply.created_on = new Date().toUTCString();
