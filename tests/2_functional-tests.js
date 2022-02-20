@@ -35,7 +35,7 @@ suite('Functional Tests', function() {
         })
 
         //Creating a new reply: POST request to /api/replies/{board}
-        /*test('POST: Creating a new reply on a Thread', function(done) {
+        test('POST: Creating a new reply on a Thread', function(done) {
             chai.request(server)
                 .post('/api/replies/test')
                 .send({
@@ -49,7 +49,7 @@ suite('Functional Tests', function() {
                     testReplyId = createdReplyId;
                     done();
                 });
-        });*/
+        });
 
     });
 

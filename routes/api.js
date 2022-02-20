@@ -100,7 +100,7 @@ module.exports = function (app) {
     .put(function (request, response) {
 
       Message.findByIdAndUpdate(
-        request.body.thread_id,
+        request.body.report_id,
         {reported: true},
         {new: true},
         (error, updatedThread) => {
