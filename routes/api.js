@@ -28,7 +28,9 @@ module.exports = function (app) {
 
       NewMessage.save((error, savedMessage) => {
         if (!error && savedMessage) {
+          
           return response.json(savedMessage)
+          //response.redirect('/b/' + savedMessage.board + '/')
         }
       });
     })
@@ -139,6 +141,7 @@ module.exports = function (app) {
             console.log(updatedThread)// outputs the result to the console
 
             return response.json(updatedThread)
+            //response.redirect('/b/' + updatedThread.board + '/' + updatedThread.id + '?new_reply_id=' + newReply.id);
           }
         }
         );
