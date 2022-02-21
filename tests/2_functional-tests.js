@@ -103,7 +103,7 @@ suite('Functional Tests', function() {
                 .put('/api/threads/test')
                 .send({
                     board: 'Functional Test Thread',
-                    report_id: testMessageId
+                    thread_id: testMessageId
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
