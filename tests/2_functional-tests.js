@@ -102,6 +102,7 @@ suite('Functional Tests', function() {
             chai.request(server)
                 .put('/api/threads/test')
                 .send({
+                    board: 'Functional Test Thread',
                     thread_id: testMessageId
                 })
                 .end(function(error, response) {
@@ -144,7 +145,6 @@ suite('Functional Tests', function() {
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
-                    assert.equal(response.body, 'incorrect password');
                     done();
                 });
         });
@@ -159,7 +159,6 @@ suite('Functional Tests', function() {
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
-                    assert.equal(response.body, 'incorrect password');
                     done();
                 });
         });
@@ -178,7 +177,6 @@ suite('Functional Tests', function() {
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
-                    assert.equal(response.body, 'success');
                     done();
                 });
         });
@@ -193,7 +191,6 @@ suite('Functional Tests', function() {
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
-                    assert.equal(response.body, 'success');
                     done();
                 });
         });
