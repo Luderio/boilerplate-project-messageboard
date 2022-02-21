@@ -28,7 +28,7 @@ module.exports = function (app) {
 
       NewMessage.save((error, savedMessage) => {
         if (!error && savedMessage) {
-          return response.redirect('/b/' + savedMessage.board + '/');
+          return response.json(savedMessage)
         }
       });
     })
@@ -138,7 +138,7 @@ module.exports = function (app) {
             console.log("---------CREATE NEW REPLIES---------")
             console.log(updatedThread)// outputs the result to the console
 
-            return response.redirect('/b/' + updatedThread.board + '/' + updatedThread.id);
+            return response.json(updatedThread)
           }
         }
         );

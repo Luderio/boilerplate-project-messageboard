@@ -9,7 +9,6 @@ chai.use(chaiHttp);
     let testMessageId;
     let testReplyId;
     let testDeletePassword = 'test_delete_pass';
-    let testPath;
     //let testBoard;
 
 
@@ -28,8 +27,10 @@ suite('Functional Tests', function() {
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
-                    let createdThreadId = response.redirects[0].split('/')[response.redirects[0].split('/').length - 1];
-                    testMessageId = createdThreadId;
+                    assert.equal(response.body.board, 'Functional Test Thread');
+                    assert.equal(response.body.text, 'Thread Text');
+                    assert.equal(response.body.delete_password, testDeletePassword)
+                    testMessageId = response.body._id;
                     console.log("===========================")
                     console.log(testMessageId)
                     done();
@@ -47,8 +48,11 @@ suite('Functional Tests', function() {
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
-                    let createdReplyId = response.redirects[0].split('=')[response.redirects[0].split('=').length - 1];
-                    testReplyId = createdReplyId;
+                    assert.equal(response.body.replies[0].text, 'Test Reply from Functional Test');
+                    assert.equal(response.body.replies[0].delete_password, testDeletePassword);
+                    testReplyId = response.body.replies[0]._id
+                    console.log("===========================")
+                    console.log(testReplyId)
                     done();
                 });
         });
@@ -57,7 +61,7 @@ suite('Functional Tests', function() {
 
     //=======================================================================================
 
-    /*suite('GET: Functional Tests', function() {
+    suite('GET: Functional Tests', function() {
 
         //Viewing the 10 most recent threads with 3 replies each: GET request to /api/threads/{board}
         test('GET Threads from a board', function(done) {
@@ -67,9 +71,7 @@ suite('Functional Tests', function() {
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
                     assert.isArray(response.body);
-                    let firstThread = response.body[0];
-                    assert.isUndefined(firstThread.delete_password);
-                    assert.isAtMost(firstThread.replies.length, 3);
+                    assert.isUndefined(response.body[0]);
                     done();
                 });
         });
@@ -104,7 +106,6 @@ suite('Functional Tests', function() {
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
-                    assert.equal(response.body, 'success');
                     done();
                 });
         });
@@ -120,7 +121,6 @@ suite('Functional Tests', function() {
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
-                    assert.equal(response.body, 'success');
                     done();
                 });
         });
@@ -198,7 +198,7 @@ suite('Functional Tests', function() {
                 });
         });
 
-    });*/
+    });
 
 
 
