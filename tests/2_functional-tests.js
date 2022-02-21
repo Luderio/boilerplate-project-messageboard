@@ -103,7 +103,7 @@ suite('Functional Tests', function() {
                 .put('/api/threads/test')
                 .send({
                     board: 'Functional Test Thread',
-                    thread_id: testMessageId
+                    report_id: testMessageId
                 })
                 .end(function(error, response) {
                     assert.equal(response.status, 200);
@@ -115,7 +115,7 @@ suite('Functional Tests', function() {
         test('Report a reply on a Thread', function(done) {
             chai.request(server)
                 .put('/api/replies/test')
-                .query({thread_id: testMessageId})
+                .query({report_id: testMessageId})
                 .send({
                     thread_id: testMessageId,
                     reply_id: testReplyId

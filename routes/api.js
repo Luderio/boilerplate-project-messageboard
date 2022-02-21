@@ -5,7 +5,7 @@ const { Message, Reply } = require("../models");
 
 module.exports = function (app) {
 
-  /*app.route('/api/threads/:board')
+  app.route('/api/threads/:board')
 
     .post(function (request, response) {
       //object containing the form data from front-end.
@@ -237,7 +237,7 @@ module.exports = function (app) {
           }
         }
       );
-    })*/
+    })
 };
 
 
